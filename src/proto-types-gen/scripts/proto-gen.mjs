@@ -20,6 +20,8 @@ import "zx/globals";
     const thirdPartyProtoPath = path.join(baseDirPath, "third_party/proto");
 
     const inputs = [
+      "cosmos/auth/v1alpha1/vesting.proto",
+      "cosmos/authz/v1beta1/authz.proto",
       "cosmos/authz/v1beta1/tx.proto",
       "cosmos/base/v1beta1/coin.proto",
       "cosmos/bank/v1beta1/bank.proto",
@@ -29,9 +31,14 @@ import "zx/globals";
       "cosmos/staking/v1beta1/authz.proto",
       "cosmos/gov/v1beta1/gov.proto",
       "cosmos/gov/v1beta1/tx.proto",
+      "cosmos/gov/v1/tx.proto",
+      "cosmos/gov/v1/gov.proto",
+      "cosmos/distribution/v1beta1/distribution.proto",
       "cosmos/distribution/v1beta1/tx.proto",
       "cosmos/crypto/multisig/v1beta1/multisig.proto",
+      "cosmos/crypto/ed25519/keys.proto",
       "cosmos/crypto/secp256k1/keys.proto",
+      "cosmos/crypto/secp256r1/keys.proto",
       "cosmos/tx/v1beta1/tx.proto",
       "cosmos/tx/signing/v1beta1/signing.proto",
       "cosmos/base/abci/v1beta1/abci.proto",
@@ -40,6 +47,15 @@ import "zx/globals";
       "osmosis/gamm/v1beta1/tx.proto",
       "osmosis/gamm/pool-models/balancer/tx/tx.proto",
       "osmosis/gamm/pool-models/stableswap/tx.proto",
+      "shentu/auth/v1alpha1/tx.proto",
+      "shentu/bounty/v1/bounty.proto",
+      "shentu/bounty/v1/tx.proto",
+      "shentu/cert/v1alpha1/cert.proto",
+      "shentu/cert/v1alpha1/tx.proto",
+      "shentu/oracle/v1alpha1/oracle.proto",
+      "shentu/oracle/v1alpha1/tx.proto",
+      "shentu/shield/v1alpha1/shield.proto",
+      "shentu/shield/v1alpha1/tx.proto"
     ];
 
     const thirdPartyInputs = ["tendermint/crypto/keys.proto"];
