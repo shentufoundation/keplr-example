@@ -48,6 +48,7 @@ import "zx/globals";
       "osmosis/gamm/pool-models/balancer/tx/tx.proto",
       "osmosis/gamm/pool-models/stableswap/tx.proto",
       "shentu/auth/v1alpha1/tx.proto",
+      "shentu/bank/v1alpha1/tx.proto",
       "shentu/bounty/v1/bounty.proto",
       "shentu/bounty/v1/tx.proto",
       "shentu/cert/v1alpha1/cert.proto",
