@@ -169,7 +169,6 @@ export interface MsgSubmitProofDetail {
   proofId: string;
   prover: string;
   detail: string;
-  deposit: Coin[];
 }
 
 export interface MsgSubmitProofDetailResponse {
@@ -2145,7 +2144,7 @@ export const MsgSubmitProofHashResponse = {
 };
 
 function createBaseMsgSubmitProofDetail(): MsgSubmitProofDetail {
-  return { proofId: "", prover: "", detail: "", deposit: [] };
+  return { proofId: "", prover: "", detail: "" };
 }
 
 export const MsgSubmitProofDetail = {
@@ -2158,9 +2157,6 @@ export const MsgSubmitProofDetail = {
     }
     if (message.detail !== "") {
       writer.uint32(26).string(message.detail);
-    }
-    for (const v of message.deposit) {
-      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -2193,13 +2189,6 @@ export const MsgSubmitProofDetail = {
 
           message.detail = reader.string();
           continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.deposit.push(Coin.decode(reader, reader.uint32()));
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2214,7 +2203,6 @@ export const MsgSubmitProofDetail = {
       proofId: isSet(object.proofId) ? globalThis.String(object.proofId) : "",
       prover: isSet(object.prover) ? globalThis.String(object.prover) : "",
       detail: isSet(object.detail) ? globalThis.String(object.detail) : "",
-      deposit: globalThis.Array.isArray(object?.deposit) ? object.deposit.map((e: any) => Coin.fromJSON(e)) : [],
     };
   },
 
@@ -2229,9 +2217,6 @@ export const MsgSubmitProofDetail = {
     if (message.detail !== "") {
       obj.detail = message.detail;
     }
-    if (message.deposit?.length) {
-      obj.deposit = message.deposit.map((e) => Coin.toJSON(e));
-    }
     return obj;
   },
 
@@ -2243,7 +2228,6 @@ export const MsgSubmitProofDetail = {
     message.proofId = object.proofId ?? "";
     message.prover = object.prover ?? "";
     message.detail = object.detail ?? "";
-    message.deposit = object.deposit?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };

@@ -155,11 +155,22 @@ message Proof {
   // submit_time is the time of proof submission.
   google.protobuf.Timestamp submit_time = 5 [(gogoproto.stdtime) = true];
 
+  // time_out is the time of proof timeout.
+  google.protobuf.Timestamp time_out = 6 [(gogoproto.stdtime) = true];
+
   //  prover is the address of the proof submitter
-  string prover = 6 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string prover = 7 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   //
-  repeated cosmos.base.v1beta1.Coin Deposit = 7 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  repeated cosmos.base.v1beta1.Coin Deposit = 8 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}
+
+message ProofHash {
+  uint64 theorem_id = 1;
+
+  string detail = 2;
+
+  string prover = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // Grant defines an amount granted by a grantor to an active theorem.
@@ -190,14 +201,23 @@ message Params {
   // Minimum grant for a theorem to enter the proof period.
   repeated cosmos.base.v1beta1.Coin min_grant = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
 
+  // Minimum deposit for a proof to enter the proof_hash_lock period.
+  repeated cosmos.base.v1beta1.Coin min_deposit = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+
   // Maximum period for Shentu holders to grant on a theorem. Initial value: 2 weeks.
-  google.protobuf.Duration max_grant_period = 2 [(gogoproto.stdduration) = true];
+  google.protobuf.Duration theorem_max_grant_period = 3 [(gogoproto.stdduration) = true];
 
-  // Duration of the proof period.
-  google.protobuf.Duration proof_period = 3 [(gogoproto.stdduration) = true];
+  // Duration of the theorem proof period. Initial value: 2 weeks.
+  google.protobuf.Duration theorem_max_proof_period = 4 [(gogoproto.stdduration) = true];
 
-  // Duration of the proof lock period. 10min
-  google.protobuf.Duration proof_hash_lock_period = 4 [(gogoproto.stdduration) = true];
+  // Duration of the proof hash lock period. 10min
+  google.protobuf.Duration proof_hash_lock_period = 5 [(gogoproto.stdduration) = true];
+
+  // Duration of the proof detail lock period. 10min
+  google.protobuf.Duration proof_detail_lock_period = 6 [(gogoproto.stdduration) = true];
+
+  // Duration of the checker response period. 10min
+  google.protobuf.Duration checker_response_period = 7 [(gogoproto.stdduration) = true];
 }
 
 enum TheoremStatus {
@@ -218,12 +238,14 @@ enum ProofStatus {
   PROOF_STATUS_UNSPECIFIED = 0;
   // proof status during the creation period.
   PROOF_STATUS_HASH_LOCK_PERIOD = 1;
-  // proof status during the upload proof period.
-  PROOF_STATUS_HASH_PROOF_PERIOD = 2;
+  // proof status during the upload proof detail period.
+  PROOF_STATUS_HASH_DETAIL_PERIOD = 2;
+  // proof status during the upload proof detail period timeout.
+  PROOF_STATUS_HASH_DETAIL_TIMEOUT = 3;
   // theorem that has passed.
-  PROOF_STATUS_PASSED = 3;
+  PROOF_STATUS_PASSED = 4;
   // theorem that has failed.
-  PROOF_STATUS_FAILED = 4;
-  // theorem that has timeout.
-  PROOF_STATUS_TIMEOUT = 5;
+  PROOF_STATUS_FAILED = 5;
+  // theorem that checker has timeout.
+  PROOF_STATUS_CHECKER_TIMEOUT = 6;
 }
