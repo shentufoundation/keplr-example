@@ -7,7 +7,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { Coin, DecCoin } from "../../../cosmos/base/v1beta1/coin";
 import { Duration } from "../../../google/protobuf/duration";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
@@ -163,14 +163,12 @@ export function findingStatusToJSON(object: FindingStatus): string {
 export enum TheoremStatus {
   /** THEOREM_STATUS_UNSPECIFIED - default theorem status. */
   THEOREM_STATUS_UNSPECIFIED = 0,
-  /** THEOREM_STATUS_GRANT_PERIOD - theorem status during the grant period. */
-  THEOREM_STATUS_GRANT_PERIOD = 1,
   /** THEOREM_STATUS_PROOF_PERIOD - theorem status during the proof period. */
-  THEOREM_STATUS_PROOF_PERIOD = 2,
+  THEOREM_STATUS_PROOF_PERIOD = 1,
   /** THEOREM_STATUS_PASSED - theorem that has passed. */
-  THEOREM_STATUS_PASSED = 3,
+  THEOREM_STATUS_PASSED = 2,
   /** THEOREM_STATUS_CLOSED - theorem that has closed. */
-  THEOREM_STATUS_CLOSED = 4,
+  THEOREM_STATUS_CLOSED = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -180,15 +178,12 @@ export function theoremStatusFromJSON(object: any): TheoremStatus {
     case "THEOREM_STATUS_UNSPECIFIED":
       return TheoremStatus.THEOREM_STATUS_UNSPECIFIED;
     case 1:
-    case "THEOREM_STATUS_GRANT_PERIOD":
-      return TheoremStatus.THEOREM_STATUS_GRANT_PERIOD;
-    case 2:
     case "THEOREM_STATUS_PROOF_PERIOD":
       return TheoremStatus.THEOREM_STATUS_PROOF_PERIOD;
-    case 3:
+    case 2:
     case "THEOREM_STATUS_PASSED":
       return TheoremStatus.THEOREM_STATUS_PASSED;
-    case 4:
+    case 3:
     case "THEOREM_STATUS_CLOSED":
       return TheoremStatus.THEOREM_STATUS_CLOSED;
     case -1:
@@ -202,8 +197,6 @@ export function theoremStatusToJSON(object: TheoremStatus): string {
   switch (object) {
     case TheoremStatus.THEOREM_STATUS_UNSPECIFIED:
       return "THEOREM_STATUS_UNSPECIFIED";
-    case TheoremStatus.THEOREM_STATUS_GRANT_PERIOD:
-      return "THEOREM_STATUS_GRANT_PERIOD";
     case TheoremStatus.THEOREM_STATUS_PROOF_PERIOD:
       return "THEOREM_STATUS_PROOF_PERIOD";
     case TheoremStatus.THEOREM_STATUS_PASSED:
@@ -221,10 +214,10 @@ export enum ProofStatus {
   PROOF_STATUS_UNSPECIFIED = 0,
   /** PROOF_STATUS_HASH_LOCK_PERIOD - proof status during the creation period. */
   PROOF_STATUS_HASH_LOCK_PERIOD = 1,
-  /** PROOF_STATUS_HASH_DETAIL_PERIOD - proof status during the upload proof detail period. */
-  PROOF_STATUS_HASH_DETAIL_PERIOD = 2,
   /** PROOF_STATUS_HASH_DETAIL_TIMEOUT - proof status during the upload proof detail period timeout. */
-  PROOF_STATUS_HASH_DETAIL_TIMEOUT = 3,
+  PROOF_STATUS_HASH_DETAIL_TIMEOUT = 2,
+  /** PROOF_STATUS_HASH_DETAIL_PERIOD - proof status during the upload proof detail period. */
+  PROOF_STATUS_HASH_DETAIL_PERIOD = 3,
   /** PROOF_STATUS_PASSED - theorem that has passed. */
   PROOF_STATUS_PASSED = 4,
   /** PROOF_STATUS_FAILED - theorem that has failed. */
@@ -243,11 +236,11 @@ export function proofStatusFromJSON(object: any): ProofStatus {
     case "PROOF_STATUS_HASH_LOCK_PERIOD":
       return ProofStatus.PROOF_STATUS_HASH_LOCK_PERIOD;
     case 2:
-    case "PROOF_STATUS_HASH_DETAIL_PERIOD":
-      return ProofStatus.PROOF_STATUS_HASH_DETAIL_PERIOD;
-    case 3:
     case "PROOF_STATUS_HASH_DETAIL_TIMEOUT":
       return ProofStatus.PROOF_STATUS_HASH_DETAIL_TIMEOUT;
+    case 3:
+    case "PROOF_STATUS_HASH_DETAIL_PERIOD":
+      return ProofStatus.PROOF_STATUS_HASH_DETAIL_PERIOD;
     case 4:
     case "PROOF_STATUS_PASSED":
       return ProofStatus.PROOF_STATUS_PASSED;
@@ -270,10 +263,10 @@ export function proofStatusToJSON(object: ProofStatus): string {
       return "PROOF_STATUS_UNSPECIFIED";
     case ProofStatus.PROOF_STATUS_HASH_LOCK_PERIOD:
       return "PROOF_STATUS_HASH_LOCK_PERIOD";
-    case ProofStatus.PROOF_STATUS_HASH_DETAIL_PERIOD:
-      return "PROOF_STATUS_HASH_DETAIL_PERIOD";
     case ProofStatus.PROOF_STATUS_HASH_DETAIL_TIMEOUT:
       return "PROOF_STATUS_HASH_DETAIL_TIMEOUT";
+    case ProofStatus.PROOF_STATUS_HASH_DETAIL_PERIOD:
+      return "PROOF_STATUS_HASH_DETAIL_PERIOD";
     case ProofStatus.PROOF_STATUS_PASSED:
       return "PROOF_STATUS_PASSED";
     case ProofStatus.PROOF_STATUS_FAILED:
@@ -349,16 +342,8 @@ export interface Theorem {
   /** status defines the theorem status. */
   status: TheoremStatus;
   /** submit_time is the time of theorem submission. */
-  submitTime:
-    | Date
-    | undefined;
-  /** submit_time is the time of theorem submission. */
-  grantEndTime:
-    | Date
-    | undefined;
-  /** voting_start_time is the starting time to submit proof of a theorem. */
-  proofStartTime: Date | undefined;
-  proofEndTime:
+  submitTime: Date | undefined;
+  endTime:
     | Date
     | undefined;
   /** total_deposit is the total grant on the theorem. */
@@ -379,8 +364,8 @@ export interface Proof {
   submitTime:
     | Date
     | undefined;
-  /** time_out is the time of proof timeout. */
-  timeOut:
+  /** end_time is the time of proof timeout. */
+  endTime:
     | Date
     | undefined;
   /** prover is the address of the proof submitter */
@@ -420,24 +405,21 @@ export interface Params {
   minGrant: Coin[];
   /** Minimum deposit for a proof to enter the proof_hash_lock period. */
   minDeposit: Coin[];
-  /** Maximum period for Shentu holders to grant on a theorem. Initial value: 2 weeks. */
-  theoremMaxGrantPeriod:
-    | Duration
-    | undefined;
   /** Duration of the theorem proof period. Initial value: 2 weeks. */
   theoremMaxProofPeriod:
     | Duration
     | undefined;
-  /** Duration of the proof hash lock period. 10min */
-  proofHashLockPeriod:
+  /** Duration of the proof max lock period. 10min */
+  proofMaxLockPeriod:
     | Duration
     | undefined;
-  /** Duration of the proof detail lock period. 10min */
-  proofDetailLockPeriod:
-    | Duration
-    | undefined;
-  /** Duration of the checker response period. 10min */
-  checkerResponsePeriod: Duration | undefined;
+  /** rate is the checker rate charged to theorem */
+  checkerRate: string;
+}
+
+export interface Reward {
+  address: string;
+  reward: DecCoin[];
 }
 
 function createBaseProgram(): Program {
@@ -1112,9 +1094,7 @@ function createBaseTheorem(): Theorem {
     proofId: "",
     status: 0,
     submitTime: undefined,
-    grantEndTime: undefined,
-    proofStartTime: undefined,
-    proofEndTime: undefined,
+    endTime: undefined,
     totalGrant: [],
     proposer: "",
   };
@@ -1143,20 +1123,14 @@ export const Theorem = {
     if (message.submitTime !== undefined) {
       Timestamp.encode(toTimestamp(message.submitTime), writer.uint32(58).fork()).ldelim();
     }
-    if (message.grantEndTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.grantEndTime), writer.uint32(66).fork()).ldelim();
-    }
-    if (message.proofStartTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.proofStartTime), writer.uint32(74).fork()).ldelim();
-    }
-    if (message.proofEndTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.proofEndTime), writer.uint32(82).fork()).ldelim();
+    if (message.endTime !== undefined) {
+      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(66).fork()).ldelim();
     }
     for (const v of message.totalGrant) {
-      Coin.encode(v!, writer.uint32(90).fork()).ldelim();
+      Coin.encode(v!, writer.uint32(74).fork()).ldelim();
     }
     if (message.proposer !== "") {
-      writer.uint32(98).string(message.proposer);
+      writer.uint32(82).string(message.proposer);
     }
     return writer;
   },
@@ -1222,31 +1196,17 @@ export const Theorem = {
             break;
           }
 
-          message.grantEndTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 9:
           if (tag !== 74) {
             break;
           }
 
-          message.proofStartTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.totalGrant.push(Coin.decode(reader, reader.uint32()));
           continue;
         case 10:
           if (tag !== 82) {
-            break;
-          }
-
-          message.proofEndTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 11:
-          if (tag !== 90) {
-            break;
-          }
-
-          message.totalGrant.push(Coin.decode(reader, reader.uint32()));
-          continue;
-        case 12:
-          if (tag !== 98) {
             break;
           }
 
@@ -1270,9 +1230,7 @@ export const Theorem = {
       proofId: isSet(object.proofId) ? globalThis.String(object.proofId) : "",
       status: isSet(object.status) ? theoremStatusFromJSON(object.status) : 0,
       submitTime: isSet(object.submitTime) ? fromJsonTimestamp(object.submitTime) : undefined,
-      grantEndTime: isSet(object.grantEndTime) ? fromJsonTimestamp(object.grantEndTime) : undefined,
-      proofStartTime: isSet(object.proofStartTime) ? fromJsonTimestamp(object.proofStartTime) : undefined,
-      proofEndTime: isSet(object.proofEndTime) ? fromJsonTimestamp(object.proofEndTime) : undefined,
+      endTime: isSet(object.endTime) ? fromJsonTimestamp(object.endTime) : undefined,
       totalGrant: globalThis.Array.isArray(object?.totalGrant)
         ? object.totalGrant.map((e: any) => Coin.fromJSON(e))
         : [],
@@ -1303,14 +1261,8 @@ export const Theorem = {
     if (message.submitTime !== undefined) {
       obj.submitTime = message.submitTime.toISOString();
     }
-    if (message.grantEndTime !== undefined) {
-      obj.grantEndTime = message.grantEndTime.toISOString();
-    }
-    if (message.proofStartTime !== undefined) {
-      obj.proofStartTime = message.proofStartTime.toISOString();
-    }
-    if (message.proofEndTime !== undefined) {
-      obj.proofEndTime = message.proofEndTime.toISOString();
+    if (message.endTime !== undefined) {
+      obj.endTime = message.endTime.toISOString();
     }
     if (message.totalGrant?.length) {
       obj.totalGrant = message.totalGrant.map((e) => Coin.toJSON(e));
@@ -1333,9 +1285,7 @@ export const Theorem = {
     message.proofId = object.proofId ?? "";
     message.status = object.status ?? 0;
     message.submitTime = object.submitTime ?? undefined;
-    message.grantEndTime = object.grantEndTime ?? undefined;
-    message.proofStartTime = object.proofStartTime ?? undefined;
-    message.proofEndTime = object.proofEndTime ?? undefined;
+    message.endTime = object.endTime ?? undefined;
     message.totalGrant = object.totalGrant?.map((e) => Coin.fromPartial(e)) || [];
     message.proposer = object.proposer ?? "";
     return message;
@@ -1349,7 +1299,7 @@ function createBaseProof(): Proof {
     detail: "",
     status: 0,
     submitTime: undefined,
-    timeOut: undefined,
+    endTime: undefined,
     prover: "",
     Deposit: [],
   };
@@ -1372,8 +1322,8 @@ export const Proof = {
     if (message.submitTime !== undefined) {
       Timestamp.encode(toTimestamp(message.submitTime), writer.uint32(42).fork()).ldelim();
     }
-    if (message.timeOut !== undefined) {
-      Timestamp.encode(toTimestamp(message.timeOut), writer.uint32(50).fork()).ldelim();
+    if (message.endTime !== undefined) {
+      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(50).fork()).ldelim();
     }
     if (message.prover !== "") {
       writer.uint32(58).string(message.prover);
@@ -1431,7 +1381,7 @@ export const Proof = {
             break;
           }
 
-          message.timeOut = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 7:
           if (tag !== 58) {
@@ -1463,7 +1413,7 @@ export const Proof = {
       detail: isSet(object.detail) ? globalThis.String(object.detail) : "",
       status: isSet(object.status) ? proofStatusFromJSON(object.status) : 0,
       submitTime: isSet(object.submitTime) ? fromJsonTimestamp(object.submitTime) : undefined,
-      timeOut: isSet(object.timeOut) ? fromJsonTimestamp(object.timeOut) : undefined,
+      endTime: isSet(object.endTime) ? fromJsonTimestamp(object.endTime) : undefined,
       prover: isSet(object.prover) ? globalThis.String(object.prover) : "",
       Deposit: globalThis.Array.isArray(object?.Deposit) ? object.Deposit.map((e: any) => Coin.fromJSON(e)) : [],
     };
@@ -1486,8 +1436,8 @@ export const Proof = {
     if (message.submitTime !== undefined) {
       obj.submitTime = message.submitTime.toISOString();
     }
-    if (message.timeOut !== undefined) {
-      obj.timeOut = message.timeOut.toISOString();
+    if (message.endTime !== undefined) {
+      obj.endTime = message.endTime.toISOString();
     }
     if (message.prover !== "") {
       obj.prover = message.prover;
@@ -1508,7 +1458,7 @@ export const Proof = {
     message.detail = object.detail ?? "";
     message.status = object.status ?? 0;
     message.submitTime = object.submitTime ?? undefined;
-    message.timeOut = object.timeOut ?? undefined;
+    message.endTime = object.endTime ?? undefined;
     message.prover = object.prover ?? "";
     message.Deposit = object.Deposit?.map((e) => Coin.fromPartial(e)) || [];
     return message;
@@ -1786,11 +1736,9 @@ function createBaseParams(): Params {
   return {
     minGrant: [],
     minDeposit: [],
-    theoremMaxGrantPeriod: undefined,
     theoremMaxProofPeriod: undefined,
-    proofHashLockPeriod: undefined,
-    proofDetailLockPeriod: undefined,
-    checkerResponsePeriod: undefined,
+    proofMaxLockPeriod: undefined,
+    checkerRate: "",
   };
 }
 
@@ -1802,20 +1750,14 @@ export const Params = {
     for (const v of message.minDeposit) {
       Coin.encode(v!, writer.uint32(18).fork()).ldelim();
     }
-    if (message.theoremMaxGrantPeriod !== undefined) {
-      Duration.encode(message.theoremMaxGrantPeriod, writer.uint32(26).fork()).ldelim();
-    }
     if (message.theoremMaxProofPeriod !== undefined) {
-      Duration.encode(message.theoremMaxProofPeriod, writer.uint32(34).fork()).ldelim();
+      Duration.encode(message.theoremMaxProofPeriod, writer.uint32(26).fork()).ldelim();
     }
-    if (message.proofHashLockPeriod !== undefined) {
-      Duration.encode(message.proofHashLockPeriod, writer.uint32(42).fork()).ldelim();
+    if (message.proofMaxLockPeriod !== undefined) {
+      Duration.encode(message.proofMaxLockPeriod, writer.uint32(34).fork()).ldelim();
     }
-    if (message.proofDetailLockPeriod !== undefined) {
-      Duration.encode(message.proofDetailLockPeriod, writer.uint32(50).fork()).ldelim();
-    }
-    if (message.checkerResponsePeriod !== undefined) {
-      Duration.encode(message.checkerResponsePeriod, writer.uint32(58).fork()).ldelim();
+    if (message.checkerRate !== "") {
+      writer.uint32(42).string(message.checkerRate);
     }
     return writer;
   },
@@ -1846,35 +1788,21 @@ export const Params = {
             break;
           }
 
-          message.theoremMaxGrantPeriod = Duration.decode(reader, reader.uint32());
+          message.theoremMaxProofPeriod = Duration.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.theoremMaxProofPeriod = Duration.decode(reader, reader.uint32());
+          message.proofMaxLockPeriod = Duration.decode(reader, reader.uint32());
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.proofHashLockPeriod = Duration.decode(reader, reader.uint32());
-          continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.proofDetailLockPeriod = Duration.decode(reader, reader.uint32());
-          continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.checkerResponsePeriod = Duration.decode(reader, reader.uint32());
+          message.checkerRate = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1891,21 +1819,11 @@ export const Params = {
       minDeposit: globalThis.Array.isArray(object?.minDeposit)
         ? object.minDeposit.map((e: any) => Coin.fromJSON(e))
         : [],
-      theoremMaxGrantPeriod: isSet(object.theoremMaxGrantPeriod)
-        ? Duration.fromJSON(object.theoremMaxGrantPeriod)
-        : undefined,
       theoremMaxProofPeriod: isSet(object.theoremMaxProofPeriod)
         ? Duration.fromJSON(object.theoremMaxProofPeriod)
         : undefined,
-      proofHashLockPeriod: isSet(object.proofHashLockPeriod)
-        ? Duration.fromJSON(object.proofHashLockPeriod)
-        : undefined,
-      proofDetailLockPeriod: isSet(object.proofDetailLockPeriod)
-        ? Duration.fromJSON(object.proofDetailLockPeriod)
-        : undefined,
-      checkerResponsePeriod: isSet(object.checkerResponsePeriod)
-        ? Duration.fromJSON(object.checkerResponsePeriod)
-        : undefined,
+      proofMaxLockPeriod: isSet(object.proofMaxLockPeriod) ? Duration.fromJSON(object.proofMaxLockPeriod) : undefined,
+      checkerRate: isSet(object.checkerRate) ? globalThis.String(object.checkerRate) : "",
     };
   },
 
@@ -1917,20 +1835,14 @@ export const Params = {
     if (message.minDeposit?.length) {
       obj.minDeposit = message.minDeposit.map((e) => Coin.toJSON(e));
     }
-    if (message.theoremMaxGrantPeriod !== undefined) {
-      obj.theoremMaxGrantPeriod = Duration.toJSON(message.theoremMaxGrantPeriod);
-    }
     if (message.theoremMaxProofPeriod !== undefined) {
       obj.theoremMaxProofPeriod = Duration.toJSON(message.theoremMaxProofPeriod);
     }
-    if (message.proofHashLockPeriod !== undefined) {
-      obj.proofHashLockPeriod = Duration.toJSON(message.proofHashLockPeriod);
+    if (message.proofMaxLockPeriod !== undefined) {
+      obj.proofMaxLockPeriod = Duration.toJSON(message.proofMaxLockPeriod);
     }
-    if (message.proofDetailLockPeriod !== undefined) {
-      obj.proofDetailLockPeriod = Duration.toJSON(message.proofDetailLockPeriod);
-    }
-    if (message.checkerResponsePeriod !== undefined) {
-      obj.checkerResponsePeriod = Duration.toJSON(message.checkerResponsePeriod);
+    if (message.checkerRate !== "") {
+      obj.checkerRate = message.checkerRate;
     }
     return obj;
   },
@@ -1942,25 +1854,88 @@ export const Params = {
     const message = createBaseParams();
     message.minGrant = object.minGrant?.map((e) => Coin.fromPartial(e)) || [];
     message.minDeposit = object.minDeposit?.map((e) => Coin.fromPartial(e)) || [];
-    message.theoremMaxGrantPeriod =
-      (object.theoremMaxGrantPeriod !== undefined && object.theoremMaxGrantPeriod !== null)
-        ? Duration.fromPartial(object.theoremMaxGrantPeriod)
-        : undefined;
     message.theoremMaxProofPeriod =
       (object.theoremMaxProofPeriod !== undefined && object.theoremMaxProofPeriod !== null)
         ? Duration.fromPartial(object.theoremMaxProofPeriod)
         : undefined;
-    message.proofHashLockPeriod = (object.proofHashLockPeriod !== undefined && object.proofHashLockPeriod !== null)
-      ? Duration.fromPartial(object.proofHashLockPeriod)
+    message.proofMaxLockPeriod = (object.proofMaxLockPeriod !== undefined && object.proofMaxLockPeriod !== null)
+      ? Duration.fromPartial(object.proofMaxLockPeriod)
       : undefined;
-    message.proofDetailLockPeriod =
-      (object.proofDetailLockPeriod !== undefined && object.proofDetailLockPeriod !== null)
-        ? Duration.fromPartial(object.proofDetailLockPeriod)
-        : undefined;
-    message.checkerResponsePeriod =
-      (object.checkerResponsePeriod !== undefined && object.checkerResponsePeriod !== null)
-        ? Duration.fromPartial(object.checkerResponsePeriod)
-        : undefined;
+    message.checkerRate = object.checkerRate ?? "";
+    return message;
+  },
+};
+
+function createBaseReward(): Reward {
+  return { address: "", reward: [] };
+}
+
+export const Reward = {
+  encode(message: Reward, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    for (const v of message.reward) {
+      DecCoin.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Reward {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReward();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.reward.push(DecCoin.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Reward {
+    return {
+      address: isSet(object.address) ? globalThis.String(object.address) : "",
+      reward: globalThis.Array.isArray(object?.reward) ? object.reward.map((e: any) => DecCoin.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: Reward): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    if (message.reward?.length) {
+      obj.reward = message.reward.map((e) => DecCoin.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Reward>, I>>(base?: I): Reward {
+    return Reward.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Reward>, I>>(object: I): Reward {
+    const message = createBaseReward();
+    message.address = object.address ?? "";
+    message.reward = object.reward?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };

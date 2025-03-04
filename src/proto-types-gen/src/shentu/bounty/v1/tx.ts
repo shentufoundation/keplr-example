@@ -8,7 +8,14 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
-import { SeverityLevel, severityLevelFromJSON, severityLevelToJSON } from "./bounty";
+import {
+  ProofStatus,
+  proofStatusFromJSON,
+  proofStatusToJSON,
+  SeverityLevel,
+  severityLevelFromJSON,
+  severityLevelToJSON,
+} from "./bounty";
 
 export const protobufPackage = "shentu.bounty.v1";
 
@@ -172,6 +179,22 @@ export interface MsgSubmitProofDetail {
 }
 
 export interface MsgSubmitProofDetailResponse {
+}
+
+export interface MsgSubmitProofVerification {
+  proofId: string;
+  status: ProofStatus;
+  checker: string;
+}
+
+export interface MsgSubmitProofVerificationResponse {
+}
+
+export interface MsgWithdrawReward {
+  address: string;
+}
+
+export interface MsgWithdrawRewardResponse {
 }
 
 function createBaseMsgCreateProgram(): MsgCreateProgram {
@@ -2275,6 +2298,242 @@ export const MsgSubmitProofDetailResponse = {
   },
 };
 
+function createBaseMsgSubmitProofVerification(): MsgSubmitProofVerification {
+  return { proofId: "", status: 0, checker: "" };
+}
+
+export const MsgSubmitProofVerification = {
+  encode(message: MsgSubmitProofVerification, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.proofId !== "") {
+      writer.uint32(10).string(message.proofId);
+    }
+    if (message.status !== 0) {
+      writer.uint32(16).int32(message.status);
+    }
+    if (message.checker !== "") {
+      writer.uint32(26).string(message.checker);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSubmitProofVerification {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSubmitProofVerification();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.proofId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.checker = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSubmitProofVerification {
+    return {
+      proofId: isSet(object.proofId) ? globalThis.String(object.proofId) : "",
+      status: isSet(object.status) ? proofStatusFromJSON(object.status) : 0,
+      checker: isSet(object.checker) ? globalThis.String(object.checker) : "",
+    };
+  },
+
+  toJSON(message: MsgSubmitProofVerification): unknown {
+    const obj: any = {};
+    if (message.proofId !== "") {
+      obj.proofId = message.proofId;
+    }
+    if (message.status !== 0) {
+      obj.status = proofStatusToJSON(message.status);
+    }
+    if (message.checker !== "") {
+      obj.checker = message.checker;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgSubmitProofVerification>, I>>(base?: I): MsgSubmitProofVerification {
+    return MsgSubmitProofVerification.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgSubmitProofVerification>, I>>(object: I): MsgSubmitProofVerification {
+    const message = createBaseMsgSubmitProofVerification();
+    message.proofId = object.proofId ?? "";
+    message.status = object.status ?? 0;
+    message.checker = object.checker ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgSubmitProofVerificationResponse(): MsgSubmitProofVerificationResponse {
+  return {};
+}
+
+export const MsgSubmitProofVerificationResponse = {
+  encode(_: MsgSubmitProofVerificationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSubmitProofVerificationResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSubmitProofVerificationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSubmitProofVerificationResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSubmitProofVerificationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgSubmitProofVerificationResponse>, I>>(
+    base?: I,
+  ): MsgSubmitProofVerificationResponse {
+    return MsgSubmitProofVerificationResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgSubmitProofVerificationResponse>, I>>(
+    _: I,
+  ): MsgSubmitProofVerificationResponse {
+    const message = createBaseMsgSubmitProofVerificationResponse();
+    return message;
+  },
+};
+
+function createBaseMsgWithdrawReward(): MsgWithdrawReward {
+  return { address: "" };
+}
+
+export const MsgWithdrawReward = {
+  encode(message: MsgWithdrawReward, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawReward {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWithdrawReward();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawReward {
+    return { address: isSet(object.address) ? globalThis.String(object.address) : "" };
+  },
+
+  toJSON(message: MsgWithdrawReward): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgWithdrawReward>, I>>(base?: I): MsgWithdrawReward {
+    return MsgWithdrawReward.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawReward>, I>>(object: I): MsgWithdrawReward {
+    const message = createBaseMsgWithdrawReward();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgWithdrawRewardResponse(): MsgWithdrawRewardResponse {
+  return {};
+}
+
+export const MsgWithdrawRewardResponse = {
+  encode(_: MsgWithdrawRewardResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawRewardResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWithdrawRewardResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWithdrawRewardResponse {
+    return {};
+  },
+
+  toJSON(_: MsgWithdrawRewardResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgWithdrawRewardResponse>, I>>(base?: I): MsgWithdrawRewardResponse {
+    return MsgWithdrawRewardResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawRewardResponse>, I>>(_: I): MsgWithdrawRewardResponse {
+    const message = createBaseMsgWithdrawRewardResponse();
+    return message;
+  },
+};
+
 /** Msg defines the staking Msg service. */
 export interface Msg {
   /** CreateProgram defines a method for creating a new program. */
@@ -2305,8 +2564,12 @@ export interface Msg {
   SubmitProofHash(request: MsgSubmitProofHash): Promise<MsgSubmitProofHashResponse>;
   /** SubmitProofDetail defines a method to submit a proof with detail. */
   SubmitProofDetail(request: MsgSubmitProofDetail): Promise<MsgSubmitProofHashResponse>;
+  /** SubmitProofVerification defines a method to submit a proof result. */
+  SubmitProofVerification(request: MsgSubmitProofVerification): Promise<MsgSubmitProofVerificationResponse>;
   /** Grant defines a method to grant theorem given the messages. */
   Grant(request: MsgGrant): Promise<MsgGrantResponse>;
+  /** Grant defines a method to grant theorem given the messages. */
+  WithdrawReward(request: MsgWithdrawReward): Promise<MsgWithdrawRewardResponse>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
