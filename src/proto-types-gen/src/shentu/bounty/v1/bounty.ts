@@ -214,16 +214,14 @@ export enum ProofStatus {
   PROOF_STATUS_UNSPECIFIED = 0,
   /** PROOF_STATUS_HASH_LOCK_PERIOD - proof status during the creation period. */
   PROOF_STATUS_HASH_LOCK_PERIOD = 1,
-  /** PROOF_STATUS_HASH_DETAIL_TIMEOUT - proof status during the upload proof detail period timeout. */
-  PROOF_STATUS_HASH_DETAIL_TIMEOUT = 2,
+  /** PROOF_STATUS_HASH_LOCK_TIMEOUT - proof status during the upload proof detail period timeout. */
+  PROOF_STATUS_HASH_LOCK_TIMEOUT = 2,
   /** PROOF_STATUS_HASH_DETAIL_PERIOD - proof status during the upload proof detail period. */
   PROOF_STATUS_HASH_DETAIL_PERIOD = 3,
   /** PROOF_STATUS_PASSED - theorem that has passed. */
   PROOF_STATUS_PASSED = 4,
   /** PROOF_STATUS_FAILED - theorem that has failed. */
   PROOF_STATUS_FAILED = 5,
-  /** PROOF_STATUS_CHECKER_TIMEOUT - theorem that checker has timeout. */
-  PROOF_STATUS_CHECKER_TIMEOUT = 6,
   UNRECOGNIZED = -1,
 }
 
@@ -236,8 +234,8 @@ export function proofStatusFromJSON(object: any): ProofStatus {
     case "PROOF_STATUS_HASH_LOCK_PERIOD":
       return ProofStatus.PROOF_STATUS_HASH_LOCK_PERIOD;
     case 2:
-    case "PROOF_STATUS_HASH_DETAIL_TIMEOUT":
-      return ProofStatus.PROOF_STATUS_HASH_DETAIL_TIMEOUT;
+    case "PROOF_STATUS_HASH_LOCK_TIMEOUT":
+      return ProofStatus.PROOF_STATUS_HASH_LOCK_TIMEOUT;
     case 3:
     case "PROOF_STATUS_HASH_DETAIL_PERIOD":
       return ProofStatus.PROOF_STATUS_HASH_DETAIL_PERIOD;
@@ -247,9 +245,6 @@ export function proofStatusFromJSON(object: any): ProofStatus {
     case 5:
     case "PROOF_STATUS_FAILED":
       return ProofStatus.PROOF_STATUS_FAILED;
-    case 6:
-    case "PROOF_STATUS_CHECKER_TIMEOUT":
-      return ProofStatus.PROOF_STATUS_CHECKER_TIMEOUT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -263,16 +258,14 @@ export function proofStatusToJSON(object: ProofStatus): string {
       return "PROOF_STATUS_UNSPECIFIED";
     case ProofStatus.PROOF_STATUS_HASH_LOCK_PERIOD:
       return "PROOF_STATUS_HASH_LOCK_PERIOD";
-    case ProofStatus.PROOF_STATUS_HASH_DETAIL_TIMEOUT:
-      return "PROOF_STATUS_HASH_DETAIL_TIMEOUT";
+    case ProofStatus.PROOF_STATUS_HASH_LOCK_TIMEOUT:
+      return "PROOF_STATUS_HASH_LOCK_TIMEOUT";
     case ProofStatus.PROOF_STATUS_HASH_DETAIL_PERIOD:
       return "PROOF_STATUS_HASH_DETAIL_PERIOD";
     case ProofStatus.PROOF_STATUS_PASSED:
       return "PROOF_STATUS_PASSED";
     case ProofStatus.PROOF_STATUS_FAILED:
       return "PROOF_STATUS_FAILED";
-    case ProofStatus.PROOF_STATUS_CHECKER_TIMEOUT:
-      return "PROOF_STATUS_CHECKER_TIMEOUT";
     case ProofStatus.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
