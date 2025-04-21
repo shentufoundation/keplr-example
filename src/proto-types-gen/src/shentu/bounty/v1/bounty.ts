@@ -331,7 +331,6 @@ export interface Theorem {
   description: string;
   /** code is a summary of the theorem */
   code: string;
-  proofId: string;
   /** status defines the theorem status. */
   status: TheoremStatus;
   /** submit_time is the time of theorem submission. */
@@ -339,7 +338,7 @@ export interface Theorem {
   endTime:
     | Date
     | undefined;
-  /** total_deposit is the total grant on the theorem. */
+  /** total_grant is the total grant on the theorem. */
   totalGrant: Coin[];
   /** proposer is the address of the theorem submitter */
   proposer: string;
@@ -363,7 +362,7 @@ export interface Proof {
     | undefined;
   /** prover is the address of the proof submitter */
   prover: string;
-  /**  */
+  /** deposit is the amount deposited by the prover */
   Deposit: Coin[];
 }
 
@@ -383,9 +382,9 @@ export interface Grant {
   amount: Coin[];
 }
 
-/** Deposit defines an amount granted by a grantor to an active theorem. */
+/** Deposit defines an amount deposited by a depositor for a proof. */
 export interface Deposit {
-  /** theorem_id defines the unique id of the theorem. */
+  /** proof_id defines the unique id of the proof. */
   proofId: string;
   /** depositor defines the deposit addresses. */
   depositor: string;
@@ -1084,7 +1083,6 @@ function createBaseTheorem(): Theorem {
     title: "",
     description: "",
     code: "",
-    proofId: "",
     status: 0,
     submitTime: undefined,
     endTime: undefined,
@@ -1107,23 +1105,20 @@ export const Theorem = {
     if (message.code !== "") {
       writer.uint32(34).string(message.code);
     }
-    if (message.proofId !== "") {
-      writer.uint32(42).string(message.proofId);
-    }
     if (message.status !== 0) {
-      writer.uint32(48).int32(message.status);
+      writer.uint32(40).int32(message.status);
     }
     if (message.submitTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.submitTime), writer.uint32(58).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.submitTime), writer.uint32(50).fork()).ldelim();
     }
     if (message.endTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(66).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(58).fork()).ldelim();
     }
     for (const v of message.totalGrant) {
-      Coin.encode(v!, writer.uint32(74).fork()).ldelim();
+      Coin.encode(v!, writer.uint32(66).fork()).ldelim();
     }
     if (message.proposer !== "") {
-      writer.uint32(82).string(message.proposer);
+      writer.uint32(74).string(message.proposer);
     }
     return writer;
   },
@@ -1164,42 +1159,35 @@ export const Theorem = {
           message.code = reader.string();
           continue;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.proofId = reader.string();
-          continue;
-        case 6:
-          if (tag !== 48) {
+          if (tag !== 40) {
             break;
           }
 
           message.status = reader.int32() as any;
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.submitTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 7:
           if (tag !== 58) {
             break;
           }
 
-          message.submitTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.totalGrant.push(Coin.decode(reader, reader.uint32()));
           continue;
         case 9:
           if (tag !== 74) {
-            break;
-          }
-
-          message.totalGrant.push(Coin.decode(reader, reader.uint32()));
-          continue;
-        case 10:
-          if (tag !== 82) {
             break;
           }
 
@@ -1220,7 +1208,6 @@ export const Theorem = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       code: isSet(object.code) ? globalThis.String(object.code) : "",
-      proofId: isSet(object.proofId) ? globalThis.String(object.proofId) : "",
       status: isSet(object.status) ? theoremStatusFromJSON(object.status) : 0,
       submitTime: isSet(object.submitTime) ? fromJsonTimestamp(object.submitTime) : undefined,
       endTime: isSet(object.endTime) ? fromJsonTimestamp(object.endTime) : undefined,
@@ -1244,9 +1231,6 @@ export const Theorem = {
     }
     if (message.code !== "") {
       obj.code = message.code;
-    }
-    if (message.proofId !== "") {
-      obj.proofId = message.proofId;
     }
     if (message.status !== 0) {
       obj.status = theoremStatusToJSON(message.status);
@@ -1275,7 +1259,6 @@ export const Theorem = {
     message.title = object.title ?? "";
     message.description = object.description ?? "";
     message.code = object.code ?? "";
-    message.proofId = object.proofId ?? "";
     message.status = object.status ?? 0;
     message.submitTime = object.submitTime ?? undefined;
     message.endTime = object.endTime ?? undefined;

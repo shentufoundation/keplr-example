@@ -39,7 +39,7 @@ export interface MsgEditProgram {
 export interface MsgCreateProgramResponse {
 }
 
-/** MsgModifyProgramResponse defines the Msg/ModifyProgram response type. */
+/** MsgEditProgramResponse defines the Msg/EditProgram response type. */
 export interface MsgEditProgramResponse {
 }
 
@@ -106,17 +106,17 @@ export interface MsgActivateFinding {
 export interface MsgActivateFindingResponse {
 }
 
-/** MsgConfirmFindingPaid defines a message to close a finding to an existing finding. */
+/** MsgConfirmFindingPaid defines a message to confirm a finding has been paid. */
 export interface MsgConfirmFindingPaid {
   findingId: string;
   operatorAddress: string;
 }
 
-/** MsgCloseFindingResponse defines the Msg/CloseFinding response type. */
+/** MsgConfirmFindingPaidResponse defines the Msg/ConfirmFindingPaid response type. */
 export interface MsgConfirmFindingPaidResponse {
 }
 
-/** MsgCloseFinding defines a message to close a finding to an existing finding. */
+/** MsgCloseFinding defines a message to close a finding. */
 export interface MsgCloseFinding {
   findingId: string;
   operatorAddress: string;
@@ -140,6 +140,7 @@ export interface MsgPublishFinding {
 export interface MsgPublishFindingResponse {
 }
 
+/** MsgCreateTheorem defines a message to create a new theorem. */
 export interface MsgCreateTheorem {
   title: string;
   description: string;
@@ -148,10 +149,12 @@ export interface MsgCreateTheorem {
   proposer: string;
 }
 
+/** MsgCreateTheoremResponse defines the Msg/CreateTheorem response type. */
 export interface MsgCreateTheoremResponse {
   theoremId: string;
 }
 
+/** MsgGrant defines a message to grant funds to a theorem. */
 export interface MsgGrant {
   /** theorem_id defines the unique id of the theorem. */
   theoremId: string;
@@ -159,9 +162,11 @@ export interface MsgGrant {
   amount: Coin[];
 }
 
+/** MsgGrantResponse defines the Msg/Grant response type. */
 export interface MsgGrantResponse {
 }
 
+/** MsgSubmitProofHash defines a message to submit a proof hash. */
 export interface MsgSubmitProofHash {
   theoremId: string;
   prover: string;
@@ -169,27 +174,33 @@ export interface MsgSubmitProofHash {
   deposit: Coin[];
 }
 
+/** MsgSubmitProofHashResponse defines the Msg/SubmitProofHash response type. */
 export interface MsgSubmitProofHashResponse {
 }
 
+/** MsgSubmitProofDetail defines a message to submit proof details. */
 export interface MsgSubmitProofDetail {
   proofId: string;
   prover: string;
   detail: string;
 }
 
+/** MsgSubmitProofDetailResponse defines the Msg/SubmitProofDetail response type. */
 export interface MsgSubmitProofDetailResponse {
 }
 
+/** MsgSubmitProofVerification defines a message to submit proof verification. */
 export interface MsgSubmitProofVerification {
   proofId: string;
   status: ProofStatus;
   checker: string;
 }
 
+/** MsgSubmitProofVerificationResponse defines the Msg/SubmitProofVerification response type. */
 export interface MsgSubmitProofVerificationResponse {
 }
 
+/** MsgWithdrawReward defines a message to withdraw rewards. */
 export interface MsgWithdrawReward {
   address: string;
 }
@@ -2563,12 +2574,12 @@ export interface Msg {
   /** SubmitProofHash defines a method to submit a proof with hash. */
   SubmitProofHash(request: MsgSubmitProofHash): Promise<MsgSubmitProofHashResponse>;
   /** SubmitProofDetail defines a method to submit a proof with detail. */
-  SubmitProofDetail(request: MsgSubmitProofDetail): Promise<MsgSubmitProofHashResponse>;
+  SubmitProofDetail(request: MsgSubmitProofDetail): Promise<MsgSubmitProofDetailResponse>;
   /** SubmitProofVerification defines a method to submit a proof result. */
   SubmitProofVerification(request: MsgSubmitProofVerification): Promise<MsgSubmitProofVerificationResponse>;
   /** Grant defines a method to grant theorem given the messages. */
   Grant(request: MsgGrant): Promise<MsgGrantResponse>;
-  /** Grant defines a method to grant theorem given the messages. */
+  /** WithdrawReward defines a method to withdraw reward given the messages. */
   WithdrawReward(request: MsgWithdrawReward): Promise<MsgWithdrawRewardResponse>;
 }
 
