@@ -55,6 +55,7 @@ export const sendMsgs = async (
           }),
           gasLimit: fee.gas,
         }),
+        tip: undefined,
       }).finish(),
       chainId: chainInfo.chainId,
       accountNumber: Long.fromString(account.account_number)

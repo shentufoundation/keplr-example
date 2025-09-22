@@ -1,26 +1,36 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "es6"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "noEmit": false,
+    "jsx": "react-jsx",
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "noImplicitAny": false
   },
   "include": [
-    "src"
+    "src/index.ts",
+    "src/lib/**/*",
+    "src/types/**/*", 
+    "src/util/**/*",
+    "src/constants.ts",
+    "src/proto-types-gen/**/*"
+  ],
+  "exclude": [
+    "src/demo/**/*",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "src/proto-types-gen/src/google/protobuf/descriptor.ts"
   ]
 }

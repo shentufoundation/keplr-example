@@ -1,6 +1,12 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = function override(config) {
+  // Change entry point to demo app for development
+  if (process.env.NODE_ENV === 'development') {
+    config.entry = path.resolve(__dirname, 'src/demo/index.tsx');
+  }
+
   const fallback = config.resolve.fallback || {};
   Object.assign(fallback, {
     os: require.resolve("os-browserify/browser"),

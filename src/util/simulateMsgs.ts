@@ -50,6 +50,7 @@ export const simulateMsgs = async (
             };
           }),
         }),
+        tip: undefined,
       }).finish(),
       // Because of the validation of tx itself, the signature must exist.
       // However, since they do not actually verify the signature, it is okay to use any value.

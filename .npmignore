@@ -1,0 +1,28 @@
+# Source files
+src/demo/
+src/App.tsx
+src/index.tsx
+src/styles/
+
+# Development files
+*.log
+.DS_Store
+.env*
+.vscode/
+.idea/
+
+# Build artifacts
+build/
+node_modules/
+
+# Config files
+config-overrides.js
+tsconfig.json
+public/
+
+# Git files
+.git/
+.gitignore
+
+# Documentation (except README.md)
+docs/ 

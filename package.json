@@ -1,7 +1,30 @@
 {
-  "name": "keplr-example",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@wallet/proto-types",
+  "version": "1.0.0",
+  "description": "Protocol buffer types and React hooks for Cosmos ecosystem blockchain development",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "README_EN.md",
+    "NPM_PUBLISH.md"
+  ],
+  "keywords": [
+    "keplr",
+    "wallet",
+    "cosmos",
+    "react",
+    "hooks",
+    "blockchain",
+    "web3"
+  ],
+  "author": "Keplr Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chainapsis/keplr-example"
+  },
   "dependencies": {
     "@ethersproject/address": "^5.7.0",
     "@keplr-wallet/common": "^0.12.96",
@@ -12,17 +35,24 @@
     "@types/node": "^16.18.48",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "protobufjs": "^7.5.4",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5"
   },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "tsc",
+    "build:demo": "react-app-rewired build",
+    "start:demo": "react-app-rewired start",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "proto-build": "zx ./src/proto-types-gen/scripts/proto-gen.mjs"
+    "proto-build": "zx ./src/proto-types-gen/scripts/proto-gen.mjs",
+    "prepublishOnly": "npm run build"
   },
   "eslintConfig": {
     "extends": [
